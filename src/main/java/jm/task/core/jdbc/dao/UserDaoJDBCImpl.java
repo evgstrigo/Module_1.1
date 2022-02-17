@@ -2,8 +2,7 @@ package jm.task.core.jdbc.dao;
 
 
 import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.ConnectionUtils;
-import jm.task.core.jdbc.util.MySQLConnUtils;
+import jm.task.core.jdbc.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     static {
         try {
-            connection = ConnectionUtils.getMyConnection();
+            connection = Util.getMySQLConnection();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
