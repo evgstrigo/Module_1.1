@@ -18,22 +18,23 @@ public class Main {
 
         UserServiceImpl userServiceImpl = new UserServiceImpl();
 
-        userServiceImpl.dropUsersTable();
+
         userServiceImpl.createUsersTable();
 
 
         userServiceImpl.saveUser("Ivan", "Valetov", (byte) 19);
         userServiceImpl.saveUser("Oleg", "Ragalevich", (byte) 32);
         userServiceImpl.saveUser("Eugenio", "Fioletov", (byte) 24);
-        userServiceImpl.saveUser("Lampa", "Pampura", (byte) 32);
-        userServiceImpl.saveUser("Olga", "Kozyreva", (byte) 37);
+        userServiceImpl.saveUser("Jacov", "Pampura", (byte) 32);
+
 
         for (User u : userServiceImpl.getAllUsers()) {
             System.out.println(u);
         }
 
-//        userServiceImpl.cleanUsersTable();
-        userServiceImpl.removeUserById(300);
+        userServiceImpl.cleanUsersTable();
+        userServiceImpl.dropUsersTable();
+
 
 
     }
