@@ -29,10 +29,10 @@ public class MySQLConnUtils {
 
         String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName;
 
-        Connection conn = DriverManager.getConnection(connectionURL, userName,
+        Connection connection = DriverManager.getConnection(connectionURL, userName,
                 password);
         System.out.println("Connection opened");
-        return conn;
+        return connection;
     }
 
 }

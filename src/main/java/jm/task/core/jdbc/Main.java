@@ -32,7 +32,7 @@ public class Main {
             System.out.println(u);
         }
 
-        userServiceImpl.cleanUsersTable();
+//        userServiceImpl.cleanUsersTable();
         userServiceImpl.removeUserById(300);
 
 
