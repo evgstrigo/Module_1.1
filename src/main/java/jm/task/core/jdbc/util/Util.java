@@ -15,35 +15,37 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class Util {
+    private final static String CONNECTION_URL = "jdbc:mysql://localhost:3306/kata_db";
+    private final static String USER_NAME = "root";
+    private final static String PASSWORD = "123456";
+    private final static String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 
-    // Connect to MySQL by JDBC
-    public static Connection getMySQLConnection() throws SQLException,
-            ClassNotFoundException {
-        String hostName = "localhost";
+    private static Connection connection;
 
-        String dbName = "kata_db";
-        String userName = "root";
-        String password = "123456";
-
-        return getMySQLConnection(hostName, dbName, userName, password);
-    }
-
-    public static Connection getMySQLConnection(String hostName, String dbName,
-                                                String userName, String password) throws SQLException,
-            ClassNotFoundException {
-        // Declare the class Driver for MySQL DB
-        // This is necessary with Java 5 (or older)
-        // Java6 (or newer) automatically find the appropriate driver.
-        // If you use Java> 5, then this line is not needed.
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName;
-
-        Connection connection = DriverManager.getConnection(connectionURL, userName,
-                password);
-        System.out.println("Connection opened");
+    public static Connection getConnection() {
+        try {
+            Class.forName(DRIVER_NAME);
+            connection = DriverManager.getConnection(CONNECTION_URL, USER_NAME, PASSWORD);
+            System.out.println("Connection opened");
+        } catch (SQLException |
+                ClassNotFoundException e) {
+            System.out.println("Exception while opening connection");
+        }
         return connection;
     }
+
+    public static void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                System.out.println("При закрытии Connection произошла ошибка");
+            }
+        }
+    }
+
+
+
 
 
 
@@ -63,9 +65,6 @@ public class Util {
     public static Session getSession() throws IOException {
         return getSessionFactory().openSession();
     }
-
-
-
 
 
 }
