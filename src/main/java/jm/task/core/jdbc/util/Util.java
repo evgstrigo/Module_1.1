@@ -1,7 +1,6 @@
 package jm.task.core.jdbc.util;
 
 import jm.task.core.jdbc.model.User;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -19,6 +18,7 @@ public class Util {
     private final static String USER_NAME = "root";
     private final static String PASSWORD = "123456";
     private final static String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+    private final static String HIBERNATE_DIALECT = "org.hibernate.dialect.MySQLDialect";
 
     private static Connection connection;
 
@@ -44,26 +44,32 @@ public class Util {
         }
     }
 
+     //Connect by HIBERNATE
+    public static SessionFactory getSessionFactory() {
+
+        try {
+            Properties prop = new Properties();
+            prop.setProperty("hibernate.connection.url", CONNECTION_URL);
+            prop.setProperty("hibernate.connection.username", USER_NAME);
+            prop.setProperty("hibernate.connection.password", PASSWORD);
+            prop.setProperty("hibernate.dialect", HIBERNATE_DIALECT);
+            prop.setProperty("hibernate.current_session_context_class", "thread");
+            prop.setProperty("hibernate.hbm2ddl.auto", "update");
+            prop.setProperty("show_sql", "true");
 
 
+            Configuration configuration = new Configuration()
+                    .addProperties(prop)
+                    .addAnnotatedClass(User.class);
 
+            ServiceRegistry sr = new StandardServiceRegistryBuilder()
+                    .applySettings(configuration.getProperties())
+                    .build();
 
-
-    // Connect to MySQL by HIBERNATE
-    private static SessionFactory getSessionFactory() throws IOException {
-        Properties properties = new Properties();
-        properties.load(new FileReader(
-                "C:\\Users\\sev\\IdeaProjects\\kata\\src\\main\\resources\\myHibernate.properties"));
-
-        Configuration conf = new Configuration().setProperties(properties).addAnnotatedClass(User.class);
-        ServiceRegistry sr = new StandardServiceRegistryBuilder().applySettings(conf.getProperties()).build();
-        SessionFactory sf = conf.buildSessionFactory(sr);
-        return sf;
-    }
-
-
-    public static Session getSession() throws IOException {
-        return getSessionFactory().openSession();
+            return configuration.buildSessionFactory(sr);
+        } catch (Exception ex) {
+            throw new ExceptionInInitializerError(ex);
+        }
     }
 
 
