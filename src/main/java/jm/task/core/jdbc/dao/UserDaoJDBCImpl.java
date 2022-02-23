@@ -10,17 +10,11 @@ import java.util.List;
 
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static Connection connection;
 
-    static {
-        try {
-            connection = Util.getMySQLConnection();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    private Connection connection;
 
     public UserDaoJDBCImpl() {
+        connection = Util.getConnection();
     }
 
 
@@ -35,6 +29,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Внезапно возникло исключение " + e);
         }
@@ -47,6 +42,7 @@ public class UserDaoJDBCImpl implements UserDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
             System.out.println("Table USERS is DROPPED");
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Внезапно возникло исключение " + e);
         }
@@ -61,8 +57,8 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
             preparedStatement.executeUpdate();
-
             System.out.println("User с именем – " + name + " добавлен в базу данных");
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Ошибка добавления пользователя");
             System.out.println("Внезапно возникло исключение " + e);
@@ -76,6 +72,8 @@ public class UserDaoJDBCImpl implements UserDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
+            System.out.println("Пользователь с ID = " + id + " удалён");
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Внезапно возникло исключение " + e);
         }
@@ -84,23 +82,20 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> allUsersList = new ArrayList<>();
         String sql = "select * from USERS";
-        Long id;
-        String name;
-        String lastname;
-        byte age;
         User tempUser;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                id = resultSet.getLong("ID");
-                name = resultSet.getString("NAME");
-                lastname = resultSet.getString("LASTNAME");
-                age = resultSet.getByte("AGE");
-                tempUser = new User(name, lastname, age);
-                tempUser.setId(id);
+                tempUser = new User(); // эта строка обязательно должна быть внутри цикла
+                                       // иначе все объекты в листе будут одинаковыми
+                tempUser.setId(resultSet.getLong("ID"));
+                tempUser.setName(resultSet.getString("NAME"));
+                tempUser.setLastName(resultSet.getString("LASTNAME"));
+                tempUser.setAge(resultSet.getByte("AGE"));
                 allUsersList.add(tempUser);
             }
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Внезапно возникло исключение " + e);
         }
@@ -113,6 +108,7 @@ public class UserDaoJDBCImpl implements UserDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
             System.out.println("Таблица очищена");
+            preparedStatement.close();
         } catch (SQLException e) {
             System.out.println("Внезапно возникло исключение " + e);
         }
