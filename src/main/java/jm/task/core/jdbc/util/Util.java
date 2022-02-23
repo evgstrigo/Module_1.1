@@ -20,6 +20,8 @@ public class Util {
     private final static String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     private final static String HIBERNATE_DIALECT = "org.hibernate.dialect.MySQLDialect";
 
+
+    // Connection by JDBC
     private static Connection connection;
 
     public static Connection getConnection() {
@@ -44,7 +46,7 @@ public class Util {
         }
     }
 
-     //Connect by HIBERNATE
+    //Connect by HIBERNATE
     public static SessionFactory getSessionFactory() {
 
         try {
